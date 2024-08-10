@@ -6,6 +6,8 @@ import sidebar from "./sidebar.js";
 export default hopeTheme({
   hostname: "https://blog.focot.cn",
 
+  hotReload: true,
+
   author: {
     name: "TiyaAnlite"
   },
@@ -22,7 +24,8 @@ export default hopeTheme({
   //navbar,
 
   // 侧边栏
-  //sidebar,
+  sidebar,
+  sidebarSorter: ['order', 'date-desc'],
 
   // 页脚
   footer: '<a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备19051483号</a>',
@@ -100,6 +103,7 @@ export default hopeTheme({
       tabs: true,
       tasklist: true,
       vPre: true,
+      alert: true,
 
       // 在启用之前安装 chart.js
       // chart: true,

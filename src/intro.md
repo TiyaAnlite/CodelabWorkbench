@@ -1,7 +1,9 @@
 ---
 icon: circle-info
+date: 2024-08-10
+article: false
 ---
 
 # 介绍页
 
-将你的个人介绍和档案放置在此处。
+*等待施工*
