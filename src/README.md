@@ -1,5 +1,6 @@
 ---
 home: true
+order: 1
 layout: BlogHome
 icon: home
 title: 主页
