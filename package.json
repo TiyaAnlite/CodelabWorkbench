@@ -7,15 +7,20 @@
     "docs:build": "vuepress-vite build src",
     "docs:clean-dev": "vuepress-vite dev src --clean-cache",
     "docs:dev": "vuepress-vite dev src",
-    "docs:update-package": "pnpm dlx vp-update"
+    "docs:update-package": "pnpm dlx vp-update",
+    "deploy:cos": "dotenv-flow \"pnpm deploy:cos:env\"",
+    "deploy:cos:env": "cross-env-shell \"coscli sync src/.vuepress/dist/ $COS_DEST_PATH -r --delete --force\"",
+    "docs:publish": "pnpm docs:build && pnpm deploy:cos"
   },
   "keywords": [],
   "author": "",
   "license": "GPL-3.0-only",
   "devDependencies": {
+    "@vuepress/bundler-vite": "2.0.0-rc.14",
+    "cross-env": "^7.0.3",
+    "dotenv-flow-cli": "^1.1.1",
     "vue": "^3.4.31",
     "vuepress": "2.0.0-rc.14",
-    "@vuepress/bundler-vite": "2.0.0-rc.14",
     "vuepress-theme-hope": "2.0.0-rc.52"
   }
 }

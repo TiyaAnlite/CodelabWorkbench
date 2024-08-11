@@ -11,6 +11,12 @@ importers:
       '@vuepress/bundler-vite':
         specifier: 2.0.0-rc.14
         version: 2.0.0-rc.14(@types/node@22.1.0)(sass@1.77.8)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      dotenv-flow-cli:
+        specifier: ^1.1.1
+        version: 1.1.1
       vue:
         specifier: ^3.4.31
         version: 3.4.37
@@ -883,6 +889,11 @@ packages:
     resolution: {integrity: sha512-ehJ0Zw5RSV2G4+/azUb7vEZWRSA/K9cW7HDock1Y9ViDexkgSJUZJRcObdw/YAWeXKjreEQV9l/igNSsJ1yw5A==}
     engines: {node: '>=18'}
 
+  cross-env@7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
+
   cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
@@ -928,6 +939,22 @@ packages:
 
   domutils@3.1.0:
     resolution: {integrity: sha512-H78uMmQtI2AhgDJjWeQmHwJJ2bLPD3GMmO7Zja/ZZh84wkm+4ut+IUnUdRa8uCGX88DiVx1j6FRe1XfxEgjEZA==}
+
+  dotenv-expand@11.0.6:
+    resolution: {integrity: sha512-8NHi73otpWsZGBSZwwknTXS5pqMOrk9+Ssrna8xCaxkzEpU9OTf9R5ArQGVw03//Zmk9MOwLPng9WwndvpAJ5g==}
+    engines: {node: '>=12'}
+
+  dotenv-flow-cli@1.1.1:
+    resolution: {integrity: sha512-r2Ij1fAqHSownUugXAmdqtgJ6pyXTuPIJFY+y4sWnwSoelBkdCEgttaremc5gdjwXjdUQqNOzonIYl/Wx69OOg==}
+    hasBin: true
+
+  dotenv-flow@4.1.0:
+    resolution: {integrity: sha512-0cwP9jpQBQfyHwvE0cRhraZMkdV45TQedA8AAUZMsFzvmLcQyc1HPv+oX0OOYwLFjIlvgVepQ+WuQHbqDaHJZg==}
+    engines: {node: '>= 12.0.0'}
+
+  dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
 
   electron-to-chromium@1.5.5:
     resolution: {integrity: sha512-QR7/A7ZkMS8tZuoftC/jfqNkZLQO779SSW3YuZHP4eXpj3EffGLFcB/Xu9AAZQzLccTiCV+EmUo3ha4mQ9wnlA==}
@@ -1173,6 +1200,9 @@ packages:
   mimic-fn@2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
     engines: {node: '>=6'}
+
+  minimist@1.2.8:
+    resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
 
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
@@ -2557,6 +2587,10 @@ snapshots:
 
   create-codepen@2.0.0: {}
 
+  cross-env@7.0.3:
+    dependencies:
+      cross-spawn: 7.0.3
+
   cross-spawn@7.0.3:
     dependencies:
       path-key: 3.1.1
@@ -2602,6 +2636,23 @@ snapshots:
       dom-serializer: 2.0.0
       domelementtype: 2.3.0
       domhandler: 5.0.3
+
+  dotenv-expand@11.0.6:
+    dependencies:
+      dotenv: 16.4.5
+
+  dotenv-flow-cli@1.1.1:
+    dependencies:
+      cross-spawn: 7.0.3
+      dotenv-expand: 11.0.6
+      dotenv-flow: 4.1.0
+      minimist: 1.2.8
+
+  dotenv-flow@4.1.0:
+    dependencies:
+      dotenv: 16.4.5
+
+  dotenv@16.4.5: {}
 
   electron-to-chromium@1.5.5: {}
 
@@ -2860,6 +2911,8 @@ snapshots:
       picomatch: 2.3.1
 
   mimic-fn@2.1.0: {}
+
+  minimist@1.2.8: {}
 
   ms@2.1.2: {}
 
