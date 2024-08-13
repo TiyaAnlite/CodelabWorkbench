@@ -59,6 +59,7 @@ export default hopeTheme({
   plugins: {
     blog: true,
     searchPro: {
+      autoSuggestions: false,
       indexContent: true,
       indexLocaleOptions: {
         "/zh/": {

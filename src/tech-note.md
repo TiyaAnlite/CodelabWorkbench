@@ -14,14 +14,14 @@ isOriginal: true
 
 <!-- more -->
 
-### Tmux相关
+## Tmux相关
 
-#### 分屏
+### 分屏
 
 左右：Ctrl+B+%
 上下：Ctrl+B+"
 
-#### 鼠标滚轮支持
+### 鼠标滚轮支持
 
 默认Tmux是没有鼠标滚轮支持的，这导致无法看到终端的历史记录，只需要执行一次设置即可
 
@@ -32,9 +32,9 @@ tmux set -g mouse on  // 适用于Tmux 2.1版之后
 
 ---
 
-### Screen相关
+## Screen相关
 
-#### 鼠标滚轮支持
+### 鼠标滚轮支持
 
 screen默认也是屏蔽了滚动条，需要编辑用户配置打开
 
@@ -50,7 +50,7 @@ termcapinfo xterm* ti@:te@
 
 ---
 
-### Github连接代理(SSH)
+## Github连接代理(SSH)
 
 对于HTTP方式克隆只需要配置`http_proxy`和`https_proxy`即可，但是对于SSH来说有很大不同，这需要新建一个ssh用户配置文件，然后添加诸如以下配置，一般来说用户的ssh配置文件都在`~/.ssh/`下
 
@@ -66,9 +66,9 @@ Host github.com
 
 ---
 
-### Docker相关
+## Docker相关
 
-#### 非Root用户执行docker命令
+### 非Root用户执行docker命令
 
 默认情况下，只有用root权限才能用docker命令与本机docker daemon交互，当无权限的时候会提示以下信息
 
@@ -90,13 +90,13 @@ usermod -aG docker $USER
 
 然后重新注销并登录，就能在当前用户下使用docker指令了
 
-> 不过这项操作要谨慎，因为这样的话普通用户也能执行创建容器指令，甚至创建特权容器，从而获得对系统的控制权
+> 不过这项操作要谨慎，因为这样的话普通用户也能执行创建容器指令，甚至创建特权容器，从而获得对系统的控制权。如果你实在是需要安全性，同时愿意牺牲特权容器的功能，不妨试试[Rootless模式](https://docs.docker.com/engine/security/rootless/ "Run the Docker daemon as a non-root user (Rootless mode)") !!反正我是嫌麻烦没用过!!
 
 ---
 
-### Node相关
+## Node相关
 
-#### Linux安装与维护
+### Linux安装与维护
 
 直接用包管理器安装的node版本很低，很多功能都不支持(只到12)，例如corepack之类的东西都不支持，不过可以先安装npm，然后用npm来更新node
 
@@ -106,7 +106,7 @@ sudo npm stall -g n  // 注意权限
 sudo n stable  // 更新到最新稳定版(或者用latest到最新版)
 ```
 
-更新过后它会提示你由于可执行文件路径的变化，你需要刷新一下路径缓存
+更新过后它可能会提示你由于可执行文件路径的变化，需要刷新一下路径缓存
 
 ```
 Note: the node command changed location and the old location may be remembered in your current shell.
@@ -119,7 +119,7 @@ rehash   (for csh and tcsh)
 
 刷新路径缓存后，corepack也已经生效
 
-#### 使用corepack工具启用yarn和pnpm
+### 使用corepack工具启用yarn和pnpm
 
 在确保corepack已经能使用的情况下，执行并开启corepack
 
@@ -134,13 +134,14 @@ corepack prepare pnpm@latest --activate
 corepack prepare yarn@2.2.2 --activate  // yarn没有latest
 ```
 
-- Tips:在help中会提示两个包管理器的最新版本
+> [!tip]
+> 在help中会提示两个包管理器的最新版本
 
 ---
 
-### 系统维护相关
+## 系统维护相关
 
-#### 硬盘SMART
+### 硬盘SMART
 
 需要安装`smartctl`工具，它包含在`smartmontools`软件包底下，然后执行命令查询对应硬盘的SMART
 
@@ -150,7 +151,7 @@ sudo smartctl -a /dev/sda
 
 添加`-j`参数还能以json形式输出方便进行自动化收集
 
-#### 文件同步
+### 文件同步
 
 很多时候往往有跨服务器的文件同步需求，可以使用`rsync`结合`ssh`通道的方式实现跨区域的传输
 

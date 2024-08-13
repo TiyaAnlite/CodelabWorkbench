@@ -11,6 +11,11 @@ tagline: Codelab Workbench
 bgImage: https://webstatic.focotx.net/blog/background.webp
 # bgImage: /background.jpg
 projects:
+  - icon: note-sticky
+    name: 技术备忘
+    desc: 主要收集一些在开发使用过程中遇到的各种杂七杂八的坑
+    link: /tech-note
+  
   - icon: project
     name: FocotServices
     desc: 微服务与分布式计算架构服务群
