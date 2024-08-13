@@ -11,4 +11,4 @@ dir:
 
 *随便聊点的杂七杂八的东西*
 
-<Catalog></Catalog>
+<Catalog />

@@ -6,30 +6,22 @@ import sidebar from "./sidebar.js";
 
 export default hopeTheme({
   hostname: "https://blog.focot.cn",
-
+  darkmode: "enable",
   author: {
     name: "TiyaAnlite"
   },
-
   iconAssets: "fontawesome-with-brands",
-
   logo: "/logo_simple.webp",
-
   repo: "TiyaAnlite/CodelabWorkbench",
-
   docsDir: "src",
-
   // 导航栏
   navbar,
-
   // 侧边栏
   sidebar,
   sidebarSorter: ['order', 'date-desc'],
-
   // 页脚
   footer: '<a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备19051483号</a>',
   displayFooter: true,
-
   // 博客相关
   blog: {
     description: "普通后端社畜",
