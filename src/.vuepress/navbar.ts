@@ -7,5 +7,11 @@ export default navbar([
         icon: "pen-to-square",
         prefix: "/",
         children: ["tech/", "comprehensive-talk/", "appreciation/"]
-    }
+    },
+    {
+        text: "随想录",
+        icon: "book",
+        link: "/thoughts/",
+        activeMatch: "^/thoughts",
+    },
 ]);
