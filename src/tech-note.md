@@ -151,6 +151,27 @@ sudo smartctl -a /dev/sda
 
 添加`-j`参数还能以json形式输出方便进行自动化收集
 
+### 磁盘低格
+
+在Linux直接用`dd`全零覆写全盘即可
+
+```
+dd if=/dev/zero of=/dev/sda
+```
+
+### 磁盘占用
+
+如果在尝试卸载磁盘时发现`arget is busy`的情况，可以使用`fuser`来检查
+
+```
+fuser -mv /mnt/mountpoint  // 检查正在占用的进程
+fuser -kv /mnt/mountpoint  // 杀死占用进程并再次检查占用情况
+```
+
+> 如果你希望在发送之前得到提示，可以使用-i 选项
+
+确认无误后即可卸载
+
 ### 文件同步
 
 很多时候往往有跨服务器的文件同步需求，可以使用`rsync`结合`ssh`通道的方式实现跨区域的传输
