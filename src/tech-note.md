@@ -131,11 +131,8 @@ corepack enable
 
 ``` shell
 corepack prepare pnpm@latest --activate
-corepack prepare yarn@2.2.2 --activate  // yarn没有latest
+corepack prepare yarn@stable --activate
 ```
-
-> [!tip]
-> 在help中会提示两个包管理器的最新版本
 
 ---
 
