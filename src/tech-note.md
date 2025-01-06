@@ -90,7 +90,9 @@ usermod -aG docker $USER
 
 然后重新注销并登录，就能在当前用户下使用docker指令了
 
-> 不过这项操作要谨慎，因为这样的话普通用户也能执行创建容器指令，甚至创建特权容器，从而获得对系统的控制权。如果你实在是需要安全性，同时愿意牺牲特权容器的功能，不妨试试[Rootless模式](https://docs.docker.com/engine/security/rootless/ "Run the Docker daemon as a non-root user (Rootless mode)") !!反正我是嫌麻烦没用过!!
+::: caution
+这项操作要谨慎，因为这样的话普通用户也能执行创建容器指令，甚至创建特权容器，从而获得对系统的控制权。如果你实在是需要安全性，同时愿意牺牲特权容器的功能，不妨试试[Rootless模式](https://docs.docker.com/engine/security/rootless/ "Run the Docker daemon as a non-root user (Rootless mode)") !!反正我是嫌麻烦没用过!!
+:::
 
 ---
 
