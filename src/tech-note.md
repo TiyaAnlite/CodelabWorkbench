@@ -100,6 +100,8 @@ usermod -aG docker $USER
 
 ### Linux安装与维护
 
+**维护成本较高，建议使用下文提到的版本管理工具**
+
 直接用包管理器安装的node版本很低，很多功能都不支持(只到12)，例如corepack之类的东西都不支持，不过可以先安装npm，然后用npm来更新node
 
 ``` shell
@@ -121,7 +123,7 @@ rehash   (for csh and tcsh)
 
 刷新路径缓存后，corepack也已经生效
 
-### 使用corepack工具启用yarn和pnpm
+### 使用corepack工具启用yarn和pnpm(不好用，别用)
 
 在确保corepack已经能使用的情况下，执行并开启corepack
 
@@ -134,6 +136,19 @@ corepack enable
 ``` shell
 corepack prepare pnpm@latest --activate
 corepack prepare yarn@stable --activate
+```
+
+### Node.js版本管理
+
+建议使用`nvm`作为node版本管理的工具，项目地址：https://github.com/nvm-sh/nvm
+
+> 对于Windows可以直接使用[Scoop](https://github.com/ScoopInstaller/Scoop)来进行安装`nvm`，对于Windows的包管理推荐使用此工具
+
+想要下载并使用一个版本的Node也非常简单：
+
+``` bash
+nvm install 22
+nvm use 22
 ```
 
 ---
@@ -219,3 +234,25 @@ rsync -aP --remove-source-files [本地文件] [目标文件]  // 类似于mv
 - `-g`同步组
 - `-o`同步用户
 - `-D`为`--devices`同步设备文件和`--specials`同步特殊文件
+
+### 网络配置(netplan)
+
+> netplan是Ubuntu在18.04版本后新引入替代的网络管理工具
+
+- 接口命名：现在的Ubuntu基本上不会采用之前诸如`eth0`这样的名字，而是使用`enp1s0`这样不好记也不好打的名字，可以使用`set-name`改为自己便于记忆的名字，但是要注意为了能让netplan找到对应网卡，也需要指定`match`配置
+- 禁用ipv6：这个需求出现的原因是由于一些特殊网络，即使是ipv6能分配到global地址但是依旧无法正常使用的问题，如果不处理的话会导致DNS使用v6地址而导致网络异常，但是又不想为此在内核参数中直接禁用ipv6功能，此时只需要指定`link-local`参数避免连接ipv6地址即可，[参考资料](https://askubuntu.com/questions/1146316/how-to-use-netplan-to-remove-ipv6-address-on-a-single-interface)
+
+整体的参考配置：
+
+``` yaml
+network:
+    ethernets:
+        lan:
+            match:
+              macaddress: a4:bb:6d:13:9c:97
+            set-name: lan
+            dhcp4: true
+            dhcp6: false
+            link-local: [ipv4]
+    version: 2
+```
