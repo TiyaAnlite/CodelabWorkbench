@@ -90,15 +90,15 @@ usermod -aG docker $USER
 
 然后重新注销并登录，就能在当前用户下使用docker指令了
 
-::: caution
-这项操作要谨慎，因为这样的话普通用户也能执行创建容器指令，甚至创建特权容器，从而获得对系统的控制权。如果你实在是需要安全性，同时愿意牺牲特权容器的功能，不妨试试[Rootless模式](https://docs.docker.com/engine/security/rootless/ "Run the Docker daemon as a non-root user (Rootless mode)") !!反正我是嫌麻烦没用过!!
-:::
+> [!caution]
+>
+> 这项操作要谨慎，因为这样的话普通用户也能执行创建容器指令，甚至创建特权容器，从而获得对系统的控制权。如果你实在是需要安全性，同时愿意牺牲特权容器的功能，不妨试试[Rootless模式](https://docs.docker.com/engine/security/rootless/ "Run the Docker daemon as a non-root user (Rootless mode)") !!反正我是嫌麻烦没用过!!
 
 ---
 
 ## Node相关
 
-### Linux安装与维护
+### Linux安装与维护	
 
 **维护成本较高，建议使用下文提到的版本管理工具**
 
@@ -186,6 +186,57 @@ fuser -kv /mnt/mountpoint  // 杀死占用进程并再次检查占用情况
 
 确认无误后即可卸载
 
+### 碎片整理
+
+#### XFS
+
+虽说XFS的延迟写入技术可以减少碎片出现，但是对于用了很长时间且文件使用频繁的还是有必要整理的，但是大多数时候，都不需要优先考虑碎片问题，一般性能瓶颈不在这里，所以应用时一定要了解这块盘的使用场景
+
+首先要先确保相关的xfs工具已经安装，一般对于xfs的发行版都会有
+
+- XFS的相关工具在`xfsprogs`，而`xfs_fsr`位于`xfsdump`包
+
+然后先查询碎片情况
+
+``` bash
+// 以下指令二选一，输出的结果不完全一样，具体没有研究
+xfs_db -c frag -r /dev/sda1
+xfs_db -r -c "frag -f" /dev/sda1
+```
+
+输出样例如下
+
+``` bash
+actual 4009, ideal 1054, fragmentation factor 73.71%
+Note, this number is largely meaningless.
+Files on this filesystem average 3.80 extents per file
+```
+
+理想情况下，`extents`区段应该趋近于1，表示基本没有碎片，碎片因子是由理想区段数量`ideal`与实际区段数量`actual`的比值得来，这个数字只能做大致评估，并不意味着数值高对性能影响就大
+
+如果要整理碎片，可以使用fsr工具
+
+``` bash
+xfs_fsr /dev/sda1
+```
+
+使用`-v`可以详细输出，这是一个阻塞操作，如果需要时可以通过其他途径放置到后台运行
+
+> 磁盘碎片过多引发的其他问题 – 内存死锁问题
+>
+> 当某compute节点的磁盘碎片非常多时，我们发现compute节点上运行的虚拟机非常卡，基本的读写操作都无法进行。当我们查看compute节点的messages日志时，发现内存死锁的error信息。
+>
+> ``` bash title="/var/log/messages"
+> kernel: XFS: worker(28076) possible memory allocation deadlock size 2133872 in kmem_alloc (mode:0x250)
+>         XFS: worker(34675) possible memory allocation deadlock size 2191488 in kmem_alloc (mode:0x250)
+> ```
+>
+> 我们需要先释放一下内存
+> `echo 1 > /proc/sys/vm/drop_caches`
+> 待compute节点不再报内存死锁的error，再进行磁盘碎片的检查和整理。
+>
+> (引用自：[磁盘碎片整理方案](https://blog.csdn.net/cuigelasi/article/details/78476917))
+
 ### 文件同步
 
 很多时候往往有跨服务器的文件同步需求，可以使用`rsync`结合`ssh`通道的方式实现跨区域的传输
@@ -256,3 +307,31 @@ network:
             link-local: [ipv4]
     version: 2
 ```
+
+### 日志清理
+
+有时候，我们希望在不停止或重启程序的情况下，清理其运行过程中的日志。首先，直接删除这个文件是**不行**的，Linux与Windows不同，当该日志文件被进程打开时，Windows会提示文件被使用无法被删除，而Linux下删除不会有任何影响，但是由于文件句柄还是打开的状态，实际上操作系统会保留这个文件直到所有文件句柄被关闭，在此期间对应程序依旧可以使用这个句柄对这个消失的文件进行读写。因此从客观上，这部分占用的空间是并没有被释放的，自然无法达到所预期的目的
+
+要想实现这个目标，可以通过裁切原本的文件实现，因此在这里可以利用`truncate`命令
+
+``` bash
+truncate -s 0 xxx.log
+```
+
+使用`echo`理论上也行，但实际上我自己试的时候好像还是不行，用上面这个最为保险
+
+> 如果不小心删掉了未关闭句柄的文件，会导致文件找不到但空间仍被占用的问题，可以通过查询文件句柄找到这些仍在运行的进程：
+>
+> ```bash
+> lsof -nP | grep -i deleted
+> ```
+>
+> ``` bash
+> find /proc/*/fd -ls 2>/dev/null | grep deleted
+> ```
+> 
+> 这些文件可以直接通过操作句柄来完成上面的清理操作而无需重启进程
+> 
+> ``` bash
+> truncate -s 0 /proc/1234/fd/1
+> ```
