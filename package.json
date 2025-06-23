@@ -8,7 +8,7 @@
     "docs:clean-dev": "vuepress-vite dev src --clean-cache",
     "docs:dev": "vuepress-vite dev src",
     "docs:update-package": "pnpm dlx vp-update",
-    "deploy:cos": "dotenv-flow \"pnpm deploy:cos:env\"",
+    "deploy:cos": "dotenv-flow -- pnpm deploy:cos:env",
     "deploy:cos:env": "cross-env-shell \"coscli sync src/.vuepress/dist/ $COS_DEST_PATH -r --delete --force\"",
     "docs:publish": "pnpm docs:build && pnpm deploy:cos"
   },
