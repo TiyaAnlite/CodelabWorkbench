@@ -335,3 +335,14 @@ truncate -s 0 xxx.log
 > ``` bash
 > truncate -s 0 /proc/1234/fd/1
 > ```
+
+## Mac使用相关
+
+### 解决『应用已损坏』问题
+
+在MacOS 15中的安全策略已经只能设置可信来源为App Store或者已知开发者，未签名的应用无法直接运行，可以在终端中对这个应用执行以下命令即可使用
+
+```bash
+xattr -cr /Applications/xxx.app
+```
+
