@@ -340,9 +340,14 @@ truncate -s 0 xxx.log
 
 ### 解决『应用已损坏』问题
 
-在MacOS 15中的安全策略已经只能设置可信来源为App Store或者已知开发者，未签名的应用无法直接运行，可以在终端中对这个应用执行以下命令即可使用
+在MacOS 15中的安全策略已经只能设置可信来源为App Store或者已知开发者，未签名的应用无法直接运行，可以在终端中对这个应用执行以下命令即可使用，这个命令的目的是为了清除MacOS在从网络下载应用时，自动添加的`com.apple.quarantine`扩展属性
 
 ```bash
 xattr -cr /Applications/xxx.app
 ```
 
+如果想为了稳妥起见，也可以定向清除这个属性
+
+```bash
+xattr -dr com.apple.quarantine /Applications/xxx.app
+```
