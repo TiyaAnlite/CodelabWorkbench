@@ -66,7 +66,7 @@ Host github.com
 
 ---
 
-## Docker相关
+## Docker/容器相关
 
 ### 非Root用户执行docker命令
 
@@ -93,6 +93,51 @@ usermod -aG docker $USER
 > [!caution]
 >
 > 这项操作要谨慎，因为这样的话普通用户也能执行创建容器指令，甚至创建特权容器，从而获得对系统的控制权。如果你实在是需要安全性，同时愿意牺牲特权容器的功能，不妨试试[Rootless模式](https://docs.docker.com/engine/security/rootless/ "Run the Docker daemon as a non-root user (Rootless mode)") !!反正我是嫌麻烦没用过!!
+
+### Apple Container
+
+`Container`是Apple官方在macOS 26推出的官方容器工具，使用轻量化虚拟机并且更好地支持自身的硬件功能，官方仓库详见 [apple/container](https://github.com/apple/container)
+
+官方安装的方式是采用pkg包，并带有维护脚本，缺点就是升级得手动进行，可以使用`brew`软件包管理工具来进行安装，直接输入包名即可
+
+``` shell
+brew install container
+```
+
+安装完之后会自动注册开机运行，但运行`brew services`后，发现Status是error
+
+``` shell
+Name          Status   User File
+container     error  1 tiya ~/Library/LaunchAgents/homebrew.mxcl.container.plist
+```
+
+这个主要是因为首次安装后，需要下载一个kernel才能使用，因此启动前会询问是否下载安装默认kernel，但尴尬的是这个过程需要交互式确认，brew并没有对此进行处理，因此后台启动会因为无法正常交互导致问题，具体可以通过查看debug信息
+
+``` shell
+brew services list --debug
+```
+
+然后通过`stdout path`和`stderr path`字段来查阅日志进行排查
+
+解决方案就是手动启动一次，然后完成这个交互式初始化的流程
+
+``` shell
+brew services stop container // 先停止由brew管理的自启动服务
+container system start // 手动启动，提示进行下载
+
+Registering API server with launchd...
+Verifying apiserver is running...
+No default kernel configured.
+Install the recommended default kernel from [https://github.com/kata-containers/kata-containers/releases/download/3.26.0/kata-static-3.26.0-arm64.tar.zst]? [Y/n]: y
+Installing kernel...
+
+container system stop // 初始化完成之后，手动停止，便于注册自启
+brew services start container // 在brew注册自启
+brew services // 检查服务状态，因为是一次性脚本，应该结束在stopped且没有错误
+
+Name          Status  User File
+container     stopped tiya ~/Library/LaunchAgents/homebrew.mxcl.container.plist
+```
 
 ---
 
