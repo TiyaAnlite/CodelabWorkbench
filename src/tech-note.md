@@ -139,6 +139,36 @@ Name          Status  User File
 container     stopped tiya ~/Library/LaunchAgents/homebrew.mxcl.container.plist
 ```
 
+### Portainer Agent 失联
+
+具体情况如下，在使用PortainerAgent一段时间后会突然失联，即便手动重启后发现agent端口仍然不监听，检查日志可见：
+
+``` shell
+2026/06/09 04:13:22.673PM INF github.com/portainer/agent/edge/registry/server.go:99 > starting registry credential server |
+2026/06/09 04:13:22.706PM INF github.com/portainer/agent/http/proxy/kubernetes.go:53 > using default transport for Kubernetes proxy |
+2026/06/09 04:13:22.71PM INF github.com/portainer/agent/http/server.go:96 > starting Agent API server | api_version=2.33.3 server_addr=0.0.0.0 server_port=9001 use_tls=true
+2026/06/20 10:37:42.993AM INF github.com/portainer/agent/cmd/agent/main.go:89 > agent running on Docker platform |
+2026/06/20 10:37:43.032AM WRN github.com/portainer/agent/cmd/agent/main.go:115 > unable to retrieve agent container IP address, using host flag instead | error="Error response from daemon: No such container: 23a8f62d7501" host_flag=0.0.0.0
+```
+
+其中需要注意其中有一个关于`23a8f62d7501`容器的错误，但是实际上本机已经找不到这个容器名，显然是因为一些容器更新或者重建过程中导致的奇怪的残余，在这里，直接原因是因为本机使用了`Watchtower`作为容器镜像自动更新工具
+
+这与PortainerAgent的工作方式有关，在agent模式下工作时，需要找到自己的容器ip作为通告地址，采用的方式是使用`os.Hostname()`的方式拿到主机名，并利用这个主机名去容器接口获得本容器的IP。但是这个hostname有一个不同之处，在于Docker Run不指定`hostname`参数时，会将hostname自动设为容器ID，之后却不会再变更，这次通过`Watchtower`的自动镜像更新重建后，导致旧的主机名配置被继承到了新容器，但此时主机名已经无法与容器名对应，因此导致工作异常
+
+解决方案就是在Agent部署时，手动指定hostname为容器名，因为容器名一般是手动指定且固定的，确保升级过程中的主机名可解析性
+
+```shell
+docker run -d \
+	-p 9001:9001 \
+	--name PortainerAgent \
+	--hostname PortainerAgent \
+	--restart=always \
+	-v /var/run/docker.sock:/var/run/docker.sock \
+	-v /var/lib/docker/volumes:/var/lib/docker/volumes \
+	-v /:/host \
+	portainer/agent:latest
+```
+
 ---
 
 ## Node相关
